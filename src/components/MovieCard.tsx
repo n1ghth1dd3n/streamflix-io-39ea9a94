@@ -53,7 +53,7 @@ export function MovieCard({ movie, index = 0 }: { movie: Movie; index?: number }
         </div>
         <p className="text-xs font-medium truncate">{movie.title || movie.name}</p>
         <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-          <span className="text-green-500 font-semibold">{Math.round((movie.vote_average || 0) * 10)}% Match</span>
+          <span className="text-primary font-semibold">{Math.round((movie.vote_average || 0) * 10)}% Match</span>
         </div>
       </div>
     </motion.div>
