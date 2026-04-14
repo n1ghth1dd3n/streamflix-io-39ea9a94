@@ -14,7 +14,7 @@ export function VideoPlayer({ title, hlsUrl }: { title: string; hlsUrl?: string 
   const [showControls, setShowControls] = useState(true);
   const [progress, setProgress] = useState(0);
   const router = useRouter();
-  const hideTimer = useRef<ReturnType<typeof setTimeout>>();
+  const hideTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const src = hlsUrl || DEMO_HLS_URL;
 
