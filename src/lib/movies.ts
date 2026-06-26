@@ -11,8 +11,6 @@ const BIPBOP = "https://test-streams.mux.dev/test_001/stream.m3u8";
 const SINTEL = "https://test-streams.mux.dev/pts_shift/master.m3u8";
 
 export const MOVIES: Movie[] = [
- {
- export const MOVIES: Movie[] = [
   {
     id: "1",
     title: "John Wick",
@@ -42,10 +40,7 @@ export const MOVIES: Movie[] = [
     title: "Avatar",
     image: "avatar.jpg",
     hls: BIPBOP,
-  }
+  },
 ];
-
-export const FEATURED = MOVIES[0];
-}
 
 export const FEATURED = MOVIES[0];
