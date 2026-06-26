@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
+import { MOVIES, FEATURED } from "@/lib/movies";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -11,25 +12,17 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-type Movie = { title: string; image: string };
-
-const MOVIES: Movie[] = [
-  { title: "Action Hero", image: "https://picsum.photos/300/450?random=1" },
-  { title: "Space Adventure", image: "https://picsum.photos/300/450?random=2" },
-  { title: "Mystery Night", image: "https://picsum.photos/300/450?random=3" },
-  { title: "Fast Drive", image: "https://picsum.photos/300/450?random=4" },
-  { title: "The Kingdom", image: "https://picsum.photos/300/450?random=5" },
-  { title: "Future World", image: "https://picsum.photos/300/450?random=6" },
-];
-
 function HomePage() {
   const [query, setQuery] = useState("");
   const [watchlist, setWatchlist] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const filtered = useMemo(
     () => MOVIES.filter((m) => m.title.toLowerCase().includes(query.toLowerCase())),
     [query],
   );
+
+  const play = (id: string) => navigate({ to: "/watch/$movieId", params: { movieId: id } });
 
   const addToWatchlist = (title: string) => {
     if (!watchlist.includes(title)) {
@@ -63,9 +56,12 @@ function HomePage() {
         }}
       >
         <div style={{ maxWidth: 500 }}>
-          <h1 style={{ fontSize: "3rem", marginBottom: 10 }}>Featured Movie</h1>
+          <h1 style={{ fontSize: "3rem", marginBottom: 10 }}>{FEATURED.title}</h1>
           <p style={{ marginBottom: 20 }}>Watch the latest blockbuster movies and TV shows.</p>
-          <button style={{ background: "#E50914", color: "white", border: "none", padding: "12px 24px", borderRadius: 5, cursor: "pointer" }}>
+          <button
+            onClick={() => play(FEATURED.id)}
+            style={{ background: "#E50914", color: "white", border: "none", padding: "12px 24px", borderRadius: 5, cursor: "pointer" }}
+          >
             Watch Now
           </button>
         </div>
@@ -77,13 +73,18 @@ function HomePage() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 15 }}>
           {filtered.map((movie) => (
             <div
-              key={movie.title}
-              style={{ background: "#222", borderRadius: 10, overflow: "hidden", transition: "0.3s" }}
+              key={movie.id}
+              style={{ background: "#222", borderRadius: 10, overflow: "hidden", transition: "0.3s", cursor: "pointer" }}
               onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
               onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
-              <img src={movie.image} alt={movie.title} style={{ width: "100%", height: 250, objectFit: "cover" }} />
-              <h3 style={{ padding: 10 }}>{movie.title}</h3>
+              <img
+                src={movie.image}
+                alt={movie.title}
+                onClick={() => play(movie.id)}
+                style={{ width: "100%", height: 250, objectFit: "cover" }}
+              />
+              <h3 onClick={() => play(movie.id)} style={{ padding: 10 }}>{movie.title}</h3>
               <button
                 onClick={() => addToWatchlist(movie.title)}
                 style={{ width: "100%", background: "#333", color: "white", border: "none", padding: "12px 24px", cursor: "pointer" }}
