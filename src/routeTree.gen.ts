@@ -9,65 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MyListRouteImport } from './routes/my-list'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as WatchMovieIdRouteImport } from './routes/watch.$movieId'
 
-const MyListRoute = MyListRouteImport.update({
-  id: '/my-list',
-  path: '/my-list',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WatchMovieIdRoute = WatchMovieIdRouteImport.update({
-  id: '/watch/$movieId',
-  path: '/watch/$movieId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/my-list': typeof MyListRoute
-  '/watch/$movieId': typeof WatchMovieIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/my-list': typeof MyListRoute
-  '/watch/$movieId': typeof WatchMovieIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/my-list': typeof MyListRoute
-  '/watch/$movieId': typeof WatchMovieIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/my-list' | '/watch/$movieId'
+  fullPaths: '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/my-list' | '/watch/$movieId'
-  id: '__root__' | '/' | '/my-list' | '/watch/$movieId'
+  to: '/'
+  id: '__root__' | '/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  MyListRoute: typeof MyListRoute
-  WatchMovieIdRoute: typeof WatchMovieIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/my-list': {
-      id: '/my-list'
-      path: '/my-list'
-      fullPath: '/my-list'
-      preLoaderRoute: typeof MyListRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -75,30 +48,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/watch/$movieId': {
-      id: '/watch/$movieId'
-      path: '/watch/$movieId'
-      fullPath: '/watch/$movieId'
-      preLoaderRoute: typeof WatchMovieIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  MyListRoute: MyListRoute,
-  WatchMovieIdRoute: WatchMovieIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
