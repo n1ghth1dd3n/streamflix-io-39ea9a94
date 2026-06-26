@@ -12,9 +12,40 @@ const SINTEL = "https://test-streams.mux.dev/pts_shift/master.m3u8";
 
 export const MOVIES: Movie[] = [
  {
-  title: "John Wick",
-  year: 2014,
-  image: "johnwick.jpg"
+ export const MOVIES: Movie[] = [
+  {
+    id: "1",
+    title: "John Wick",
+    image: "johnwick.jpg",
+    hls: TEARS,
+  },
+  {
+    id: "2",
+    title: "The Dark Knight",
+    image: "darkknight.jpg",
+    hls: BIPBOP,
+  },
+  {
+    id: "3",
+    title: "Inception",
+    image: "inception.jpg",
+    hls: SINTEL,
+  },
+  {
+    id: "4",
+    title: "Interstellar",
+    image: "interstellar.jpg",
+    hls: TEARS,
+  },
+  {
+    id: "5",
+    title: "Avatar",
+    image: "avatar.jpg",
+    hls: BIPBOP,
+  }
+];
+
+export const FEATURED = MOVIES[0];
 }
 
 export const FEATURED = MOVIES[0];
