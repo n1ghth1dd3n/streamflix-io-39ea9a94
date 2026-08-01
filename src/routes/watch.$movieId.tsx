@@ -30,7 +30,7 @@ function WatchPage() {
     <VideoPlayer
       src={streamForMovie(movie.id)}
       title={movie.title}
-      onBack={() => navigate({ to: "/" })}
+      onBack={() => navigate({ to: "/", search: { q: "" } })}
     />
   );
 }

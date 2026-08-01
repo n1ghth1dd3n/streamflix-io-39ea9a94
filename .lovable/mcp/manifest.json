@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.1",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://dshtxpbsiywoxpammjlr.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "streamflix-dreams",
+      "version": "0.1.0",
+      "title": "Streamflix Dreams"
+    },
+    "tools": [
+      {
+        "name": "search_movies",
+        "title": "Search movies",
+        "description": "Search the Streamflix catalog (TMDB) for movies by title and return matching titles with their IDs.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Movie title or keywords to search for."
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_trending",
+        "title": "List trending movies",
+        "description": "List the movies trending this week on Streamflix, in the same order the home page shows them.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_genre_movies",
+        "title": "List movies by genre",
+        "description": "List popular Streamflix movies for one of the home page genre rows: Action, Comedy, Horror, Romance, or Sci-Fi.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "genre": {
+              "type": "string",
+              "enum": [
+                "Action",
+                "Comedy",
+                "Horror",
+                "Romance",
+                "Sci-Fi"
+              ],
+              "description": "Genre row name."
+            }
+          },
+          "required": [
+            "genre"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_movie",
+        "title": "Get movie details",
+        "description": "Get details for one Streamflix movie by its TMDB id, plus the watch URL for streaming it in the app.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "description": "TMDB movie id."
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
