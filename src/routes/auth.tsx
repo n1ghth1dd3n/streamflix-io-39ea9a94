@@ -89,7 +89,7 @@ function AuthPage() {
         <button onClick={() => setMode(mode === "signin" ? "signup" : "signin")} style={{ marginTop: 16, background: "none", border: "none", color: "#aaa", cursor: "pointer" }}>
           {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
         </button>
-        <button onClick={() => navigate({ to: "/" })} style={{ marginTop: 8, background: "none", border: "none", color: "#666", cursor: "pointer", display: "block" }}>
+        <button onClick={() => navigate({ to: "/", search: { q: "" } })} style={{ marginTop: 8, background: "none", border: "none", color: "#666", cursor: "pointer", display: "block" }}>
           Back to browsing
         </button>
       </div>
