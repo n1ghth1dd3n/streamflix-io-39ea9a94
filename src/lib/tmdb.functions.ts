@@ -32,6 +32,7 @@ async function tmdb<T>(path: string, params: Record<string, string> = {}): Promi
   else url.searchParams.set("api_key", key);
 
   const res = await fetch(url.toString(), { headers });
+  if (res.status === 401) throw new Error("TMDB rejected the API key. Please add a valid TMDB API key.");
   if (!res.ok) throw new Error(`TMDB request failed (${res.status})`);
   return (await res.json()) as T;
 }
