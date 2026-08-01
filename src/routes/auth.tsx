@@ -1,0 +1,98 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
+
+function safeNext(next: string): string {
+  return next.startsWith("/") && !next.startsWith("//") ? next : "/";
+}
+
+export const Route = createFileRoute("/auth")({
+  ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Sign in — StreamFlix" },
+      { name: "description", content: "Sign in or create a StreamFlix account to stream movies and connect apps." },
+      { property: "og:title", content: "Sign in — StreamFlix" },
+      { property: "og:description", content: "Sign in or create a StreamFlix account to stream movies and connect apps." },
+    ],
+  }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    next: typeof search["next"] === "string" ? (search["next"] as string) : "/",
+  }),
+  component: AuthPage,
+});
+
+function AuthPage() {
+  const { next } = Route.useSearch();
+  const navigate = useNavigate();
+  const target = safeNext(next);
+
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) window.location.assign(target);
+    });
+  }, [target]);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setMessage(null);
+    if (mode === "signup") {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: window.location.origin + target },
+      });
+      setBusy(false);
+      setMessage(error ? error.message : "Check your email to confirm your account.");
+      return;
+    }
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setBusy(false);
+    if (error) return setMessage(error.message);
+    window.location.assign(target);
+  }
+
+  async function google() {
+    setMessage(null);
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin + target,
+    });
+    if (result.error) return setMessage("Google sign-in failed.");
+    if (result.redirected) return;
+    window.location.assign(target);
+  }
+
+  return (
+    <main style={{ background: "#141414", color: "white", minHeight: "100vh", fontFamily: "Arial, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+      <div style={{ background: "#1c1c1c", padding: 32, borderRadius: 10, width: "100%", maxWidth: 380 }}>
+        <div style={{ color: "#E50914", fontSize: "1.8rem", fontWeight: "bold", marginBottom: 20 }}>StreamFlix</div>
+        <h1 style={{ fontSize: "1.3rem", marginBottom: 16 }}>{mode === "signin" ? "Sign in" : "Create account"}</h1>
+        <form onSubmit={submit} style={{ display: "grid", gap: 12 }}>
+          <input type="email" required placeholder="Email" aria-label="Email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ padding: 10, borderRadius: 5, border: "none" }} />
+          <input type="password" required minLength={6} placeholder="Password" aria-label="Password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ padding: 10, borderRadius: 5, border: "none" }} />
+          <button type="submit" disabled={busy} style={{ background: "#E50914", color: "white", border: "none", padding: 12, borderRadius: 5, cursor: "pointer" }}>
+            {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Sign up"}
+          </button>
+        </form>
+        <button onClick={google} style={{ width: "100%", marginTop: 12, background: "#333", color: "white", border: "none", padding: 12, borderRadius: 5, cursor: "pointer" }}>
+          Continue with Google
+        </button>
+        {message && <p role="alert" style={{ marginTop: 12, color: "#f5a" }}>{message}</p>}
+        <button onClick={() => setMode(mode === "signin" ? "signup" : "signin")} style={{ marginTop: 16, background: "none", border: "none", color: "#aaa", cursor: "pointer" }}>
+          {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
+        </button>
+        <button onClick={() => navigate({ to: "/" })} style={{ marginTop: 8, background: "none", border: "none", color: "#666", cursor: "pointer", display: "block" }}>
+          Back to browsing
+        </button>
+      </div>
+    </main>
+  );
+}
