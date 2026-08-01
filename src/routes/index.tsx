@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { getHomeFeed, searchMovies, type TmdbMovie } from "@/lib/tmdb.functions";
+import { getHomeFeed, searchMovies, type TmdbMovie, type GenreRow } from "@/lib/tmdb.functions";
+
+type HomeFeed = { featured: TmdbMovie | null; trending: TmdbMovie[]; rows: GenreRow[] };
 import { TMDB_IMAGE } from "@/lib/streams";
 
 export const Route = createFileRoute("/")({
@@ -16,9 +18,11 @@ export const Route = createFileRoute("/")({
   loaderDeps: ({ search: { q } }) => ({ q }),
   loader: async ({ deps }) => {
     if (deps.q.trim()) {
-      return { results: await searchMovies({ data: { query: deps.q } }), feed: null };
+      const results: TmdbMovie[] = await searchMovies({ data: { query: deps.q } });
+      return { results, feed: null as HomeFeed | null };
     }
-    return { results: null, feed: await getHomeFeed() };
+    const feed: HomeFeed = await getHomeFeed();
+    return { results: null as TmdbMovie[] | null, feed };
   },
   errorComponent: ({ error }) => (
     <div role="alert" style={{ background: "#141414", color: "white", minHeight: "100vh", padding: 40 }}>
