@@ -89,7 +89,7 @@ function HomePage() {
             <p style={{ color: "#888" }}>No movies matched your search.</p>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 15 }}>
-              {results.map((m) => (
+              {results.map((m: TmdbMovie) => (
                 <Poster key={m.id} movie={m} onPlay={play} />
               ))}
             </div>
@@ -122,11 +122,11 @@ function HomePage() {
             </div>
           )}
 
-          {[{ id: 0, name: "Trending Now", movies: feed?.trending ?? [] }, ...(feed?.rows ?? [])].map((row) => (
+          {([{ id: 0, name: "Trending Now", movies: feed?.trending ?? [] }, ...(feed?.rows ?? [])] as GenreRow[]).map((row) => (
             <section key={row.name} style={{ padding: "10px 20px 20px" }}>
               <h2 style={{ marginBottom: 12 }}>{row.name}</h2>
               <div style={{ display: "flex", gap: 12, overflowX: "auto", paddingBottom: 8 }}>
-                {row.movies.map((m) => (
+                {row.movies.map((m: TmdbMovie) => (
                   <div key={m.id} style={{ flex: "0 0 180px" }}>
                     <Poster movie={m} onPlay={play} />
                   </div>
