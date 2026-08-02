@@ -60,15 +60,16 @@ function AuthPage() {
     window.location.assign(target);
   }
 
-  async function google() {
+  async function oauth(provider: "google" | "apple") {
     setMessage(null);
-    const result = await lovable.auth.signInWithOAuth("google", {
+    const result = await lovable.auth.signInWithOAuth(provider, {
       redirect_uri: window.location.origin + target,
     });
-    if (result.error) return setMessage("Google sign-in failed.");
+    if (result.error) return setMessage(`${provider === "apple" ? "Apple" : "Google"} sign-in failed.`);
     if (result.redirected) return;
     window.location.assign(target);
   }
+
 
   return (
     <main style={{ background: "#141414", color: "white", minHeight: "100vh", fontFamily: "Arial, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
